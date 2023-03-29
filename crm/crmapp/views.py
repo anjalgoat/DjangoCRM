@@ -1,9 +1,18 @@
+#------------------import for function------------------
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import SignUpForm, AddRecordForm
 from .models import Record
-# Create your views here.
+
+#------------------import for API endpoint views------------------------
+from rest_framework import generics
+from .serializers import RecordSerializer
+
+
+
+
+#--------------- Create your views here.---------------
 def home(request):
     #See all records
     records = Record.objects.all()
@@ -95,3 +104,14 @@ def update_record(request, pk):
     else:
         messages.success(request, 'Login first')
         return redirect('home')
+    
+
+#----------------------------API Endpoint views code---------------------------------
+
+class RecordList(generics.ListCreateAPIView):
+    queryset = Record.objects.all()
+    serializer_class = RecordSerializer
+
+class RecordDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Record.objects.all()
+    serializer_class = RecordSerializer
